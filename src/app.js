@@ -1,6 +1,10 @@
 // Dependencies
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
+require("dotenv").config();
+
+const db = require("./db");
+const DB_HOST = process.env.DB_HOST;
 
 // Run server on specified port
 const port = process.env.PORT || 3003;
@@ -66,6 +70,9 @@ const resolvers = {
 
 // Config
 const app = express();
+
+// Connect to db
+db.connect(DB_HOST);
 
 // Apollo server
 const server = new ApolloServer({ typeDefs, resolvers });
