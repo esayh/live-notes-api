@@ -1,32 +1,15 @@
 // Dependencies
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 require("dotenv").config();
 
 const db = require("./db");
 const models = require("./models");
+const typeDefs = require("./schema");
 
 // Run server on specified port
 const DB_HOST = process.env.DB_HOST;
 const port = process.env.PORT || 3003;
-
-// GraphQL Schema
-const typeDefs = gql`
-  type Query {
-    notes: [Note!]!
-    note(id: ID!): Note!
-  }
-
-  type Note {
-    id: ID!
-    content: String!
-    author: String!
-  }
-
-  type Mutation {
-    newNote(content: String!): Note!
-  }
-`;
 
 // Resolver for Schema fields
 const resolvers = {
