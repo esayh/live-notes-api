@@ -1,6 +1,7 @@
 // Dependencies
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // imported modules
@@ -19,12 +20,25 @@ const app = express();
 // Connect to db
 db.connect(DB_HOST);
 
+// validate user token
+const validateUser = (token) => {
+  if (token) {
+    try {
+      return jwt.verify(token, process.env.JW_TOKEN);
+    } catch (err) {
+      throw new Error("Session is not valid");
+    }
+  }
+};
+
 // Apollo server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: () => {
-    return { models };
+  context: ({ req }) => {
+    const token = req.headers.authorization;
+    const user = validateUser(token);
+    return { models, user };
   },
 });
 
