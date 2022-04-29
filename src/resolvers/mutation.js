@@ -100,6 +100,7 @@ module.exports = {
     if (!user) {
       throw new AuthenticationError();
     }
+    // check for favorited note
     const verifyNote = await models.Note.findById(id);
     const hasUser = verifyNote.favoritedBy.indexOf(user.id);
 

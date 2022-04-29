@@ -2,6 +2,8 @@
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const jwt = require("jsonwebtoken");
+const helmet = require("helmet");
+const cors = require("cors");
 require("dotenv").config();
 
 // imported modules
@@ -16,7 +18,8 @@ const port = process.env.PORT || 3003;
 
 // Config
 const app = express();
-
+app.use(helmet());
+app.use(cors());
 // Connect to db
 db.connect(DB_HOST);
 
