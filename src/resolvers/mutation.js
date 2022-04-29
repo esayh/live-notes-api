@@ -12,7 +12,7 @@ const gravatar = require("../util/avatar");
 module.exports = {
   newNote: async (parent, args, { models, user }) => {
     if (!user) {
-      throw new AuthenticationError("Pleas sign in to create a note");
+      throw new AuthenticationError("Please sign in to create a note");
     }
     return await models.Note.create({
       content: args.content,
@@ -95,5 +95,44 @@ module.exports = {
       throw new AuthenticationError("Error signing in");
     }
     return jwt.sign({ id: user._id }, process.env.JW_TOKEN);
+  },
+  toggleFaves: async (parent, { id }, { models, user }) => {
+    if (!user) {
+      throw new AuthenticationError();
+    }
+    const verifyNote = await models.Note.findById(id);
+    const hasUser = verifyNote.favoritedBy.indexOf(user.id);
+
+    if (hasUser >= 0) {
+      return await models.Note.findByIdAndUpdate(
+        id,
+        {
+          $pull: {
+            favoriteBy: mongoose.Types.ObjectId(user.id),
+          },
+          $inc: {
+            favoriteCount: -1,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      return await models.Note.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            favoritedBy: mongoose.Types.ObjectId(user.id),
+          },
+          $inc: {
+            favoriteCount: 1,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
   },
 };
