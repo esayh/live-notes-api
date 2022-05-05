@@ -44,6 +44,6 @@ module.exports = gql`
     deleteNote(id: ID!): Boolean!
     toggleFaves(id: ID!): Note!
     signUp(username: String!, email: String!, password: String!): String!
-    signIn(username: String!, email: String!, password: String!): String!
+    signIn(username: String, email: String, password: String!): String!
   }
 `;

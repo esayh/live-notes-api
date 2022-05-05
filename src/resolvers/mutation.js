@@ -24,7 +24,7 @@ module.exports = {
       throw new AuthenticationError("Please sign in to delete note");
     }
 
-    const note = await models.findById(id);
+    const note = await models.Note.findById(id);
     if (note && String(note.author) !== user.id) {
       throw new ForbiddenError("You don't have permissions to delete note");
     }
@@ -109,7 +109,7 @@ module.exports = {
         id,
         {
           $pull: {
-            favoriteBy: mongoose.Types.ObjectId(user.id),
+            favoritedBy: mongoose.Types.ObjectId(user.id),
           },
           $inc: {
             favoriteCount: -1,
